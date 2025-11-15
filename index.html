@@ -1,0 +1,1152 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full Stack Developer Pixel Animation</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            overflow: hidden;
+            background: #0a0a0a;
+        }
+
+        .hero-container {
+            position: relative;
+            height: 100%;
+            min-height: 600px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .pixel-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 2rem;
+        }
+
+        .pixel-text {
+            font-size: 4rem;
+            font-weight: 900;
+            color: transparent;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            position: relative;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #64ffda;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 2.5s both;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 3s both;
+        }
+
+        .tech-item {
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid #64ffda;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: #64ffda;
+            font-size: 0.9rem;
+            font-weight: 500;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px rgba(100, 255, 218, 0.3);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(100, 255, 218, 0.6);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .finale-text {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6rem;
+            font-weight: 900;
+            color: #64ffda;
+            font-family: 'JetBrains Mono', monospace;
+            opacity: 0;
+            z-index: 20;
+            text-shadow: 0 0 30px rgba(100, 255, 218, 0.8);
+            letter-spacing: 0.2em;
+        }
+
+        .finale-text.show {
+            animation: typewriterGlow 0.4s ease-out forwards;
+        }
+
+        @keyframes typewriterGlow {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.7);
+                text-shadow: 0 0 5px rgba(100, 255, 218, 0.2);
+            }
+            30% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+                text-shadow: 0 0 60px rgba(100, 255, 218, 1);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+                text-shadow: 0 0 40px rgba(100, 255, 218, 0.9);
+            }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 3.5s both;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .btn-primary {
+            background: #64ffda;
+            color: #0a0a0a;
+        }
+
+        .btn-primary:hover {
+            background: #4fd3a7;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(100, 255, 218, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #64ffda;
+            border: 2px solid #64ffda;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(100, 255, 218, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            z-index: 100;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .section.active {
+            transform: translateX(0);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-top: 1rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #64ffda;
+            font-family: 'JetBrains Mono', monospace;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: 2px solid #64ffda;
+            color: #64ffda;
+            font-size: 1.5rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .close-btn:hover {
+            background: rgba(100, 255, 218, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .project-card {
+            background: rgba(100, 255, 218, 0.05);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: #64ffda;
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.2);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #64ffda, #4fd3a7);
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #64ffda;
+            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .project-description {
+            color: #b8c5d6;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-tag {
+            background: rgba(100, 255, 218, 0.1);
+            color: #64ffda;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .project-link {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid #64ffda;
+            color: #64ffda;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .project-link:hover {
+            background: rgba(100, 255, 218, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-intro {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .contact-intro p {
+            font-size: 1.2rem;
+            color: #b8c5d6;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-method {
+            background: rgba(100, 255, 218, 0.05);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .contact-method:hover {
+            transform: translateY(-5px);
+            border-color: #64ffda;
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.2);
+        }
+
+        .contact-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .contact-method h3 {
+            color: #64ffda;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .contact-method p {
+            color: #b8c5d6;
+            margin: 0;
+        }
+
+        .contact-form {
+            background: rgba(100, 255, 218, 0.05);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 10px;
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #64ffda;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(100, 255, 218, 0.05);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 5px;
+            color: #b8c5d6;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #64ffda;
+            box-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #64ffda;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .submit-btn:hover {
+            background: #4fd3a7;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(100, 255, 218, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .pixel-text {
+                font-size: 2.5rem;
+            }
+            
+            .tech-stack {
+                gap: 1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .pixel-text {
+                font-size: 2rem;
+            }
+            
+            .hero-content {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <main class="hero-container">
+   <canvas class="pixel-canvas" id="pixelCanvas"></canvas>
+   <div class="finale-text" id="finaleText">
+    10XDEV
+   </div>
+   <div class="hero-content">
+    <h1 class="pixel-text" id="main-title"><span id="text-line-1">FULL STACK</span><br><span id="text-line-2">10X DEVELOPER</span></h1>
+    <p class="subtitle" id="subtitle">Crafting digital experiences from frontend to backend</p>
+    <div class="tech-stack">
+     <div class="tech-item">
+      React
+     </div>
+     <div class="tech-item">
+      Node.js
+     </div>
+     <div class="tech-item">
+      Python
+     </div>
+     <div class="tech-item">
+      MongoDB
+     </div>
+     <div class="tech-item">
+      AWS
+     </div>
+    </div>
+    <div class="cta-buttons"><button class="btn btn-primary" id="primary-cta">View Projects</button> <button class="btn btn-secondary" id="secondary-cta">Contact Me</button>
+    </div>
+   </div><!-- Projects Section -->
+   <div class="section" id="projects-section">
+    <div class="section-header">
+     <h2 class="section-title">Projects</h2><button class="close-btn" id="close-projects">×</button>
+    </div>
+    <div class="projects-grid">
+     <div class="project-card">
+      <h3 class="project-title">E-Commerce Platform</h3>
+      <p class="project-description">Full-stack e-commerce solution with real-time inventory management, secure payment processing, and advanced analytics dashboard.</p>
+      <div class="project-tech"><span class="tech-tag">React</span> <span class="tech-tag">Node.js</span> <span class="tech-tag">MongoDB</span> <span class="tech-tag">Stripe</span> <span class="tech-tag">AWS</span>
+      </div>
+      <div class="project-links"><a href="#" class="project-link" target="_blank" rel="noopener noreferrer">Live Demo</a> <a href="#" class="project-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+     </div>
+     <div class="project-card">
+      <h3 class="project-title">Task Management App</h3>
+      <p class="project-description">Collaborative project management tool with real-time updates, team chat, file sharing, and advanced reporting features.</p>
+      <div class="project-tech"><span class="tech-tag">Vue.js</span> <span class="tech-tag">Express</span> <span class="tech-tag">PostgreSQL</span> <span class="tech-tag">Socket.io</span> <span class="tech-tag">Docker</span>
+      </div>
+      <div class="project-links"><a href="#" class="project-link" target="_blank" rel="noopener noreferrer">Live Demo</a> <a href="#" class="project-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+     </div>
+     <div class="project-card">
+      <h3 class="project-title">AI Content Generator</h3>
+      <p class="project-description">Machine learning powered content creation platform with natural language processing and automated SEO optimization capabilities.</p>
+      <div class="project-tech"><span class="tech-tag">Python</span> <span class="tech-tag">FastAPI</span> <span class="tech-tag">TensorFlow</span> <span class="tech-tag">React</span> <span class="tech-tag">Redis</span>
+      </div>
+      <div class="project-links"><a href="#" class="project-link" target="_blank" rel="noopener noreferrer">Live Demo</a> <a href="#" class="project-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+     </div>
+     <div class="project-card">
+      <h3 class="project-title">Real-time Analytics Dashboard</h3>
+      <p class="project-description">Interactive data visualization platform with real-time metrics, custom reporting, and automated alert systems for business intelligence.</p>
+      <div class="project-tech"><span class="tech-tag">Angular</span> <span class="tech-tag">Node.js</span> <span class="tech-tag">InfluxDB</span> <span class="tech-tag">D3.js</span> <span class="tech-tag">Kubernetes</span>
+      </div>
+      <div class="project-links"><a href="#" class="project-link" target="_blank" rel="noopener noreferrer">Live Demo</a> <a href="#" class="project-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+     </div>
+     <div class="project-card">
+      <h3 class="project-title">Social Media Scheduler</h3>
+      <p class="project-description">Multi-platform social media management tool with content scheduling, analytics tracking, and automated posting across various platforms.</p>
+      <div class="project-tech"><span class="tech-tag">Next.js</span> <span class="tech-tag">Prisma</span> <span class="tech-tag">MySQL</span> <span class="tech-tag">Vercel</span> <span class="tech-tag">APIs</span>
+      </div>
+      <div class="project-links"><a href="#" class="project-link" target="_blank" rel="noopener noreferrer">Live Demo</a> <a href="#" class="project-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+     </div>
+     <div class="project-card">
+      <h3 class="project-title">Blockchain Voting System</h3>
+      <p class="project-description">Secure, transparent voting platform built on blockchain technology with smart contracts and cryptographic verification.</p>
+      <div class="project-tech"><span class="tech-tag">Solidity</span> <span class="tech-tag">Web3.js</span> <span class="tech-tag">React</span> <span class="tech-tag">Ethereum</span> <span class="tech-tag">IPFS</span>
+      </div>
+      <div class="project-links"><a href="#" class="project-link" target="_blank" rel="noopener noreferrer">Live Demo</a> <a href="#" class="project-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+     </div>
+    </div>
+   </div><!-- Contact Section -->
+   <div class="section" id="contact-section">
+    <div class="section-header">
+     <h2 class="section-title">Contact</h2><button class="close-btn" id="close-contact">×</button>
+    </div>
+    <div class="contact-content">
+     <div class="contact-intro">
+      <p>Ready to bring your ideas to life? Let's collaborate and build something amazing together. I'm always excited to work on innovative projects and solve complex challenges.</p>
+     </div>
+     <div class="contact-methods">
+      <div class="contact-method" onclick="window.open('mailto:hello@10xdev.com', '_blank')"><span class="contact-icon">📧</span>
+       <h3>Email</h3>
+       <p>hello@10xdev.com</p>
+      </div>
+      <div class="contact-method" onclick="window.open('https://linkedin.com/in/10xdev', '_blank', 'noopener,noreferrer')"><span class="contact-icon">💼</span>
+       <h3>LinkedIn</h3>
+       <p>Connect professionally</p>
+      </div>
+      <div class="contact-method" onclick="window.open('https://github.com/10xdev', '_blank', 'noopener,noreferrer')"><span class="contact-icon">💻</span>
+       <h3>GitHub</h3>
+       <p>Check out my code</p>
+      </div>
+      <div class="contact-method" onclick="window.open('https://twitter.com/10xdev', '_blank', 'noopener,noreferrer')"><span class="contact-icon">🐦</span>
+       <h3>Twitter</h3>
+       <p>Follow for updates</p>
+      </div>
+     </div>
+     <form class="contact-form" id="contact-form">
+      <div class="form-group"><label for="name">Name</label> <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group"><label for="email">Email</label> <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group"><label for="subject">Subject</label> <input type="text" id="subject" name="subject" required>
+      </div>
+      <div class="form-group"><label for="message">Message</label> <textarea id="message" name="message" required placeholder="Tell me about your project..."></textarea>
+      </div><button type="submit" class="submit-btn">Send Message</button>
+     </form>
+    </div>
+   </div>
+  </main>
+  <script>
+        const defaultConfig = {
+            main_title_line1: "FULL STACK",
+            main_title_line2: "10X DEVELOPER",
+            subtitle: "Crafting digital experiences from frontend to backend",
+            cta_text: "View Projects",
+            secondary_cta_text: "Contact Me",
+            background_color: "#1a1a2e",
+            accent_color: "#16213e",
+            text_color: "#64ffda",
+            button_color: "#64ffda",
+            secondary_color: "#0f3460",
+            font_family: "JetBrains Mono"
+        };
+
+        class PixelAnimation {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.particles = [];
+                this.textPixels = [];
+                this.animationPhase = 0;
+                this.frameCount = 0;
+                
+                this.resize();
+                this.createInitialParticles();
+                this.animate();
+                
+                window.addEventListener('resize', () => this.resize());
+            }
+            
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.centerX = this.canvas.width / 2;
+                this.centerY = this.canvas.height / 2;
+            }
+            
+            createInitialParticles() {
+                // Create more particles for better text formation
+                for (let i = 0; i < 500; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 2,
+                        vy: (Math.random() - 0.5) * 2,
+                        size: Math.random() * 2 + 1,
+                        color: `hsl(${180 + Math.random() * 40}, 70%, ${50 + Math.random() * 30}%)`,
+                        alpha: Math.random() * 0.8 + 0.2,
+                        targetX: 0,
+                        targetY: 0,
+                        isForming: false,
+                        formDelay: Math.random() * 1500
+                    });
+                }
+            }
+            
+            createTextPixels() {
+                // Create invisible canvas to get text pixels
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                // Use responsive font size
+                const fontSize = Math.min(this.canvas.width / 12, this.canvas.height / 8, 80);
+                tempCanvas.width = this.canvas.width;
+                tempCanvas.height = this.canvas.height;
+                
+                // Set up text rendering with better quality
+                tempCtx.fillStyle = '#ffffff';
+                tempCtx.font = `bold ${fontSize}px Arial, sans-serif`; // Use Arial for better pixel detection
+                tempCtx.textAlign = 'center';
+                tempCtx.textBaseline = 'middle';
+                tempCtx.imageSmoothingEnabled = false; // Crisp text edges
+                
+                const line1 = document.getElementById('text-line-1').textContent;
+                const line2 = document.getElementById('text-line-2').textContent;
+                
+                // Clear canvas first
+                tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+                
+                // Calculate better vertical positioning
+                const lineHeight = fontSize * 1.2;
+                const totalHeight = lineHeight * 2;
+                const startY = this.centerY - totalHeight / 2;
+                
+                // Draw text with proper spacing
+                tempCtx.fillText(line1, this.centerX, startY + lineHeight * 0.5);
+                tempCtx.fillText(line2, this.centerX, startY + lineHeight * 1.5);
+                
+                const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                const pixels = imageData.data;
+                
+                this.textPixels = [];
+                const step = 2; // Even smaller step for better coverage
+                
+                // Scan for text pixels with better detection
+                for (let y = 0; y < tempCanvas.height; y += step) {
+                    for (let x = 0; x < tempCanvas.width; x += step) {
+                        const index = (y * tempCanvas.width + x) * 4;
+                        const alpha = pixels[index + 3];
+                        
+                        if (alpha > 30) { // Even lower threshold
+                            this.textPixels.push({
+                                x: x,
+                                y: y,
+                                targetReached: false
+                            });
+                        }
+                    }
+                }
+                
+                // Add extra pixels around detected text for fuller appearance
+                const extraPixels = [];
+                this.textPixels.forEach(pixel => {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        for (let dy = -1; dy <= 1; dy++) {
+                            if (dx === 0 && dy === 0) continue;
+                            const newX = pixel.x + dx * 2;
+                            const newY = pixel.y + dy * 2;
+                            if (newX >= 0 && newX < this.canvas.width && newY >= 0 && newY < this.canvas.height) {
+                                extraPixels.push({ x: newX, y: newY, targetReached: false });
+                            }
+                        }
+                    }
+                });
+                
+                // Add extra pixels to main array (avoid duplicates)
+                extraPixels.forEach(extraPixel => {
+                    const exists = this.textPixels.some(pixel => 
+                        Math.abs(pixel.x - extraPixel.x) < 3 && Math.abs(pixel.y - extraPixel.y) < 3
+                    );
+                    if (!exists) {
+                        this.textPixels.push(extraPixel);
+                    }
+                });
+                
+                console.log(`Created ${this.textPixels.length} text pixels for "${line1} ${line2}"`);
+            }
+            
+            animate() {
+                this.ctx.fillStyle = 'rgba(26, 26, 46, 0.1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.frameCount++;
+                
+                // Phase 1: Random floating (0-1s)
+                if (this.frameCount < 60) {
+                    this.animateFloatingParticles();
+                }
+                // Phase 2: Start forming text (1-2s)
+                else if (this.frameCount === 60) {
+                    this.createTextPixels();
+                    this.startFormingText();
+                }
+                // Phase 3: Form text and hold (2-2.5s)
+                else if (this.frameCount < 150) {
+                    this.animateTextFormation();
+                }
+                // Phase 4: Particles disappear and finale text appears (2.5s+)
+                else if (this.frameCount === 150) {
+                    this.startFinaleSequence();
+                }
+                else {
+                    this.animateFinaleSequence();
+                }
+                
+                requestAnimationFrame(() => this.animate());
+            }
+            
+            animateFloatingParticles() {
+                this.particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    // Wrap around screen
+                    if (particle.x < 0) particle.x = this.canvas.width;
+                    if (particle.x > this.canvas.width) particle.x = 0;
+                    if (particle.y < 0) particle.y = this.canvas.height;
+                    if (particle.y > this.canvas.height) particle.y = 0;
+                    
+                    this.drawParticle(particle);
+                });
+            }
+            
+            startFormingText() {
+                // Shuffle particles for random assignment
+                const shuffledParticles = [...this.particles].sort(() => Math.random() - 0.5);
+                
+                // Assign particles to text pixels
+                this.textPixels.forEach((textPixel, index) => {
+                    if (index < shuffledParticles.length) {
+                        const particle = shuffledParticles[index];
+                        particle.targetX = textPixel.x;
+                        particle.targetY = textPixel.y;
+                        particle.isForming = true;
+                        particle.formDelay = Math.random() * 1000; // Stagger the formation
+                    }
+                });
+                
+                // Ensure we have enough particles for all text pixels
+                if (this.textPixels.length > this.particles.length) {
+                    console.warn(`Not enough particles (${this.particles.length}) for text pixels (${this.textPixels.length})`);
+                }
+            }
+            
+            animateTextFormation() {
+                this.particles.forEach(particle => {
+                    if (particle.isForming && this.frameCount > 60 + particle.formDelay / 32) {
+                        // Move towards target
+                        const dx = particle.targetX - particle.x;
+                        const dy = particle.targetY - particle.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance > 2) {
+                            particle.x += dx * 0.08;
+                            particle.y += dy * 0.08;
+                        } else {
+                            // Reached target, start spreading effect
+                            particle.x = particle.targetX + (Math.random() - 0.5) * 4;
+                            particle.y = particle.targetY + (Math.random() - 0.5) * 4;
+                        }
+                    } else if (!particle.isForming) {
+                        // Continue floating for unassigned particles
+                        particle.x += particle.vx * 0.5;
+                        particle.y += particle.vy * 0.5;
+                        
+                        if (particle.x < 0) particle.x = this.canvas.width;
+                        if (particle.x > this.canvas.width) particle.x = 0;
+                        if (particle.y < 0) particle.y = this.canvas.height;
+                        if (particle.y > this.canvas.height) particle.y = 0;
+                    }
+                    
+                    this.drawParticle(particle);
+                });
+                
+                // Add connecting lines between nearby particles
+                this.drawConnections();
+            }
+            
+            drawParticle(particle) {
+                this.ctx.save();
+                this.ctx.globalAlpha = particle.alpha;
+                this.ctx.fillStyle = particle.color;
+                this.ctx.beginPath();
+                this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Add glow effect
+                this.ctx.shadowBlur = 10;
+                this.ctx.shadowColor = particle.color;
+                this.ctx.fill();
+                
+                this.ctx.restore();
+            }
+            
+            drawConnections() {
+                if (this.frameCount < 90) return;
+                
+                this.ctx.strokeStyle = 'rgba(100, 255, 218, 0.2)';
+                this.ctx.lineWidth = 1;
+                
+                for (let i = 0; i < this.particles.length; i++) {
+                    for (let j = i + 1; j < this.particles.length; j++) {
+                        const p1 = this.particles[i];
+                        const p2 = this.particles[j];
+                        
+                        if (!p1.isForming || !p2.isForming) continue;
+                        
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 50) {
+                            this.ctx.globalAlpha = (50 - distance) / 50 * 0.3;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(p1.x, p1.y);
+                            this.ctx.lineTo(p2.x, p2.y);
+                            this.ctx.stroke();
+                        }
+                    }
+                }
+                this.ctx.globalAlpha = 1;
+            }
+            
+            startFinaleSequence() {
+                // Mark all particles for disappearing
+                this.particles.forEach(particle => {
+                    particle.disappearing = true;
+                    particle.disappearSpeed = Math.random() * 0.02 + 0.01;
+                });
+                
+                // Show finale text instantly
+                const finaleText = document.getElementById('finaleText');
+                if (finaleText) {
+                    finaleText.classList.add('show');
+                }
+            }
+            
+            animateFinaleSequence() {
+                // Animate disappearing particles
+                this.particles.forEach(particle => {
+                    if (particle.disappearing) {
+                        particle.alpha -= particle.disappearSpeed;
+                        particle.size *= 0.99;
+                        
+                        // Add upward drift as they fade
+                        particle.y -= 1;
+                        particle.x += (Math.random() - 0.5) * 0.5;
+                        
+                        if (particle.alpha > 0 && particle.size > 0.1) {
+                            this.drawParticle(particle);
+                        }
+                    }
+                });
+            }
+        }
+
+        async function onConfigChange(config) {
+            const textLine1 = document.getElementById('text-line-1');
+            const textLine2 = document.getElementById('text-line-2');
+            const subtitle = document.getElementById('subtitle');
+            const primaryCta = document.getElementById('primary-cta');
+            const secondaryCta = document.getElementById('secondary-cta');
+            const heroContainer = document.querySelector('.hero-container');
+
+            // Update text content
+            if (textLine1) {
+                textLine1.textContent = config.main_title_line1 || defaultConfig.main_title_line1;
+            }
+            if (textLine2) {
+                textLine2.textContent = config.main_title_line2 || defaultConfig.main_title_line2;
+            }
+            if (subtitle) {
+                subtitle.textContent = config.subtitle || defaultConfig.subtitle;
+            }
+            if (primaryCta) {
+                primaryCta.textContent = config.cta_text || defaultConfig.cta_text;
+            }
+            if (secondaryCta) {
+                secondaryCta.textContent = config.secondary_cta_text || defaultConfig.secondary_cta_text;
+            }
+
+            // Update colors
+            const backgroundColor = config.background_color || defaultConfig.background_color;
+            const accentColor = config.accent_color || defaultConfig.accent_color;
+            const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const buttonColor = config.button_color || defaultConfig.button_color;
+
+            if (heroContainer) {
+                heroContainer.style.background = `linear-gradient(135deg, ${backgroundColor} 0%, ${accentColor} 50%, ${secondaryColor} 100%)`;
+            }
+
+            if (subtitle) {
+                subtitle.style.color = textColor;
+            }
+            if (primaryCta) {
+                primaryCta.style.backgroundColor = buttonColor;
+                primaryCta.style.color = backgroundColor;
+            }
+            if (secondaryCta) {
+                secondaryCta.style.color = buttonColor;
+                secondaryCta.style.borderColor = buttonColor;
+            }
+
+            // Update tech items
+            const techItems = document.querySelectorAll('.tech-item');
+            techItems.forEach(item => {
+                item.style.color = textColor;
+                item.style.borderColor = textColor;
+                item.style.backgroundColor = `${textColor}1a`;
+            });
+
+            // Update font family
+            const fontFamily = config.font_family || defaultConfig.font_family;
+            document.body.style.fontFamily = `${fontFamily}, 'Courier New', monospace`;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk.setConfig({ background_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.accent_color || defaultConfig.accent_color,
+                        set: (value) => {
+                            config.accent_color = value;
+                            window.elementSdk.setConfig({ accent_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.button_color || defaultConfig.button_color,
+                        set: (value) => {
+                            config.button_color = value;
+                            window.elementSdk.setConfig({ button_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.secondary_color || defaultConfig.secondary_color,
+                        set: (value) => {
+                            config.secondary_color = value;
+                            window.elementSdk.setConfig({ secondary_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: {
+                    get: () => config.font_family || defaultConfig.font_family,
+                    set: (value) => {
+                        config.font_family = value;
+                        window.elementSdk.setConfig({ font_family: value });
+                    }
+                },
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["main_title_line1", config.main_title_line1 || defaultConfig.main_title_line1],
+                ["main_title_line2", config.main_title_line2 || defaultConfig.main_title_line2],
+                ["subtitle", config.subtitle || defaultConfig.subtitle],
+                ["cta_text", config.cta_text || defaultConfig.cta_text],
+                ["secondary_cta_text", config.secondary_cta_text || defaultConfig.secondary_cta_text]
+            ]);
+        }
+
+        // Navigation functions
+        function showSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function hideSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Button click handlers
+        document.getElementById('primary-cta').addEventListener('click', function() {
+            this.style.transform = 'translateY(-2px) scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = 'translateY(-2px) scale(1)';
+                showSection('projects-section');
+            }, 150);
+        });
+
+        document.getElementById('secondary-cta').addEventListener('click', function() {
+            this.style.transform = 'translateY(-2px) scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = 'translateY(-2px) scale(1)';
+                showSection('contact-section');
+            }, 150);
+        });
+
+        // Close button handlers
+        document.getElementById('close-projects').addEventListener('click', function() {
+            hideSection('projects-section');
+        });
+
+        document.getElementById('close-contact').addEventListener('click', function() {
+            hideSection('contact-section');
+        });
+
+        // Contact form handler
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            
+            // Show loading state
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+            
+            // Simulate form submission
+            setTimeout(() => {
+                submitBtn.textContent = 'Message Sent! ✓';
+                submitBtn.style.background = '#4fd3a7';
+                
+                // Reset form
+                this.reset();
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.style.background = '#64ffda';
+                }, 2000);
+            }, 1500);
+        });
+
+        // Escape key to close sections
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideSection('projects-section');
+                hideSection('contact-section');
+            }
+        });
+
+        // Click outside to close sections
+        document.addEventListener('click', function(e) {
+            const projectsSection = document.getElementById('projects-section');
+            const contactSection = document.getElementById('contact-section');
+            
+            if (projectsSection.classList.contains('active') && e.target === projectsSection) {
+                hideSection('projects-section');
+            }
+            
+            if (contactSection.classList.contains('active') && e.target === contactSection) {
+                hideSection('contact-section');
+            }
+        });
+
+        // Initialize pixel animation
+        const canvas = document.getElementById('pixelCanvas');
+        const pixelAnimation = new PixelAnimation(canvas);
+
+        // Initialize Element SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+ 
+</html>
