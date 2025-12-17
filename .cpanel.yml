@@ -1,5 +1,0 @@
----
-deployment:
-  tasks:
-    - export DEPLOYPATH=/home/vakilkho/repositories/10xdev.work/
-    - /bin/cp -R images $DEPLOYPATH
